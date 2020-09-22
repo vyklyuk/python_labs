@@ -12,6 +12,7 @@ source env/bin/activate
 git status
 echo "env\n.idea" >> .gitignore
 
+
 4. 
 pip install -r requirements.txt
 
@@ -28,3 +29,8 @@ gunicorn l1:app
 
 8. 
 За допомогою GitHub 
+
+Кнопка
+compare and pull request
+Confirm Merge
+merge
