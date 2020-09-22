@@ -5,13 +5,13 @@
 2. Документація по  pyenv
 
 3. 
-'''
+
 python -m venv env
 source env/bin/activate
 
 git status
 echo "env\n.idea" >> .gitignore
-'''
+
 
 4. 
 pip install -r requirements.txt
