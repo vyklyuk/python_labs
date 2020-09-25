@@ -1,0 +1,505 @@
+openapi: 3.0.1
+info:
+  title: Online wallet
+  description: Online wallet service REST API
+  contact:
+    email: ihor.pyvovarnyk@globallogic.com
+  version: 1.0.0
+servers:
+- url: https://my-wallet.io/api/v1
+- url: http://my-wallet.io/api/v1
+tags:
+- name: auth
+  description: API authorization
+- name: users
+  description: Operations with users
+- name: wallets
+  description: Operations with wallets
+- name: transactions
+  description: Opetations with transactions
+paths:
+  /auth:
+    post:
+      tags:
+      - auth
+      summary: Authenticates a user, returns a token
+      operationId: getAuthToken
+      requestBody:
+        description: Credentials
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Credentials'
+        required: true
+      responses:
+        200:
+          description: Access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccessToken'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusResponse'
+  /user:
+    get:
+      tags:
+      - users
+      summary: Lists users
+      operationId: listUsers
+      parameters:
+      - name: email
+        in: query
+        description: "Email to filter by"
+        schema:
+          type: string
+      - name: first_name
+        in: query
+        description: "First name to filter by"
+        schema:
+          type: string
+      - name: last_name
+        in: query
+        description: "Last name to filter by"
+        schema:
+          type: string
+      responses:
+        200:
+          description: List of users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserData'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusResponse'
+      security:
+        - ApiKeyAuth: [ ]
+    post:
+      tags:
+      - users
+      summary: Creates a user
+      operationId: createUser
+      requestBody:
+        description: A new user
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserToCreate'
+        required: true
+      responses:
+        200:
+          description: Created user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserData'
+        default:
+          description: Status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusResponse'
+      security:
+        - ApiKeyAuth: [ ]
+  /user/{user_id}:
+    get:
+      tags:
+      - users
+      summary: Gets user by id
+      operationId: getUserById
+      parameters:
+      - name: user_id
+        in: path
+        description: 'Id of a target user'
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: Target user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserData'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusResponse'
+      security:
+        - ApiKeyAuth: [ ]
+    put:
+      tags:
+      - users
+      summary: Updates a user
+      operationId: updateUser
+      parameters:
+      - name: user_id
+        in: path
+        description: 'Id of a target user'
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        description: User data to update
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserToUpdate'
+        required: true
+      responses:
+        default:
+          description: Status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusResponse'
+      security:
+        - ApiKeyAuth: [ ]
+    delete:
+      tags:
+      - users
+      summary: Deletes a user
+      operationId: deleteUser
+      parameters:
+      - name: user_id
+        in: path
+        description: 'Id of a target user'
+        required: true
+        schema:
+          type: integer
+      responses:
+        default:
+          description: Status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusResponse'
+      security:
+      - ApiKeyAuth: [ ]
+  /wallet:
+    get:
+      tags:
+      - wallets
+      summary: Lists wallets of the authorized user
+      operationId: listWallets
+      responses:
+        200:
+          description: List of wallets of the authorized user
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/WalletData'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusResponse'
+      security:
+      - ApiKeyAuth: [ ]
+    post:
+      tags:
+      - wallets
+      summary: Creates a wallet for the authorized user
+      operationId: createWallet
+      requestBody:
+        description: A new wallet for the authorized user
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WalletToCreate'
+        required: true
+      responses:
+        200:
+          description: Created wallet
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WalletData'
+        default:
+          description: Status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusResponse'
+      security:
+      - ApiKeyAuth: [ ]
+  /wallet/{wallet_id}:
+    get:
+      tags:
+      - wallets
+      summary: Get wallet of the authorized user by id
+      operationId: getWalletById
+      parameters:
+      - name: wallet_id
+        in: path
+        description: 'Id of a target wallet'
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: Target wallet
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WalletData'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusResponse'
+      security:
+      - ApiKeyAuth: [ ]
+    put:
+      tags:
+      - wallets
+      summary: Updates a wallet of the authorized user
+      operationId: updateWallet
+      parameters:
+      - name: wallet_id
+        in: path
+        description: 'Id of a target wallet'
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        description: Wallet data to udpate
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WalletToUpdate'
+        required: true
+      responses:
+        default:
+          description: Creation status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusResponse'
+      security:
+      - ApiKeyAuth: [ ]
+    delete:
+      tags:
+      - wallets
+      summary: Delete a wallet of the authorized user
+      operationId: deleteWallet
+      parameters:
+      - name: wallet_id
+        in: path
+        description: 'Id of a target wallet'
+        required: true
+        schema:
+          type: integer
+      responses:
+        default:
+          description: Status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusResponse'
+      security:
+      - ApiKeyAuth: [ ]
+  /wallet/{wallet_id}/send-funds:
+    post:
+      tags:
+      - transactions
+      summary: Send funds from one wallet of the authorized user to another wallet of any user
+      operationId: sendFunds
+      parameters:
+      - name: wallet_id
+        in: path
+        description: 'Id of a target wallet to send funds from'
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        description: Transaction details
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FundsToSend'
+        required: true
+      responses:
+        200:
+          description: Transaction data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionData'
+        default:
+          description: Transaction status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusResponse'
+      security:
+        - ApiKeyAuth: [ ]
+  /wallet/{wallet_id}/transactions:
+    get:
+      tags:
+      - transactions
+      summary: Get taransactions associated with a wallet of the authorized user
+      description: Includes transactions from and to a given wallet
+      operationId: getWalletTransactions
+      parameters:
+      - name: wallet_id
+        in: path
+        description: 'Id of a target wallet'
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: Trransactions associated with a target wallet
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TransactionData'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusResponse'
+      security:
+      - ApiKeyAuth: [ ]
+components:
+  schemas:
+    Credentials:
+      required:
+      - email
+      - password
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+    AccessToken:
+      required:
+      - access_token
+      type: object
+      properties:
+        access_token:
+          type: string
+    UserData:
+      required:
+      - id
+      - email
+      type: object
+      properties:
+        id:
+          type: integer
+        email:
+          type: string
+        first_name:
+          type: string
+        last_name:
+          type: string
+    UserToCreate:
+      required:
+      - email
+      - password
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+        first_name:
+          type: string
+        last_name:
+          type: string
+    UserToUpdate:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+        first_name:
+          type: string
+        last_name:
+          type: string
+    WalletData:
+      required:
+      - id
+      - funds
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        funds:
+          type: integer
+    WalletToCreate:
+      type: object
+      properties:
+        name:
+          type: string
+    WalletToUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+    FundsToSend:
+      required:
+      - to_wallet
+      - amount
+      type: object
+      properties:
+        to_wallet:
+          type: integer
+        amount:
+          type: integer
+    TransactionData:
+      required:
+      - id
+      type: object
+      properties:
+        id:
+          type: integer
+        from_wallet:
+          type: integer
+          nullable: true
+        to_wallet:
+          type: integer
+        amount:
+          type: integer
+        datetime:
+          type: string
+          format: date-time
+    StatusResponse:
+      required:
+      - code
+      type: object
+      properties:
+        code:
+          type: integer
+        type:
+          type: string
+        message:
+          type: string
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
