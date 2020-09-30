@@ -1,0 +1,33 @@
+@startuml database
+!define table(x) class x << (T,#FFAAAA) >>
+!define primary_key(x) <u>x</u>
+hide methods
+hide stereotypes
+
+table(users) {
+    uid: integer
+    email: string
+    password: string
+    first_name: string
+    last_name: string
+}
+
+table(wallets) {
+    uid: integer
+    name: string
+    funds: big integer
+    owner_uid: integer
+}
+
+table(transactions) {
+    uid: integer
+    from_wallet_uid: integer
+    to_wallet_uid: integer
+    amount: integer
+    datetime: datetime
+}
+
+wallets -> users
+transactions -> wallets
+
+@enduml
