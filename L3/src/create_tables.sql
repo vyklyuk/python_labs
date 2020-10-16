@@ -1,7 +1,7 @@
 CREATE TABLE users (
     uid SERIAL NOT NULL, 
     email VARCHAR, 
-    password VARCHAR, 
+    password BYTEA,
     first_name VARCHAR, 
     last_name VARCHAR, 
     PRIMARY KEY (uid)
