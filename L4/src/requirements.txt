@@ -1,0 +1,6 @@
+Flask
+gunicorn
+sqlalchemy
+psycopg2-binary
+alembic
+marshmallow
